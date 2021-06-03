@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.exdata.music.MusicMapper">
+<!-- 	<insert id="insert" parameterType="org.springframework.data.jdbc.mybatis.MyBatisContext"> -->
+<!-- 		<bind name="parentId" value="_parameter.get('lego_set')" /> -->
+<!-- 		INSERT INTO Model (name, description, lego_set) VALUES (#{instance.name}, #{instance.description}, #{parentId}) -->
+<!-- 	</insert> -->
+<!-- 	<select id="findAllByPath-models" resultType="Music" parameterType="org.springframework.data.jdbc.mybatis.MyBatisContext"> -->
+<!-- 		<bind name="id" value="identifier.toMap().get('lego_set')"/> -->
+<!-- 		SELECT name, description -->
+<!-- 		FROM Model -->
+<!-- 		WHERE lego_set = #{id} -->
+<!-- 	</select> -->
+	<select id="findAllByProperty-url" resultType="Music" parameterType="org.springframework.data.jdbc.mybatis.MyBatisContext">
+		SELECT id, title, artist, regdate, url
+		FROM music
+		WHERE url LIKE '%'||#{id}||'%'
+	</select>
+</mapper>

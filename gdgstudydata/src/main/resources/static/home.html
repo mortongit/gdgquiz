@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<style type="text/css">
+table {
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+
+td, th {
+	border: 1px solid black;
+}
+</style>
+</head>
+<body>
+<div id="app">
+	<h1>목록</h1>
+	<button type="button" @click="add">추가</button>
+	<table>
+		<thead>
+			<tr>
+				<th>제목</th>
+				<th>아티스트</th>
+				<th>발매일</th>
+				<th>액션</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="m in musicList">
+				<td><a :href="m.url" target="_blank">{{ m.title }}</a></td>
+				<td>{{ m.artist }}</td>
+				<td>{{ m.regdate }}</td>
+				<td><button type="button" @click="view(m,$event)">상세정보</button></td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+	<form v-if="editing">
+		<input type="text" v-model.trim="music.title" placeholder="제목" /><br />
+		<input type="text" v-model.trim="music.artist" placeholder="아티스트" /><br />
+		<input type="date" v-model="music.regdate" placeholder="발매일" /><br />
+		<input type="url" v-model="music.url" placeholder="유튜브주소" /><br />
+		<button type="button" @click="save">저장</button>
+		<button type="button" @click="del">삭제</button>
+		<button type="reset" @click="()=>this.editing=false">취소</button>
+	</form>
+</div>
+<script type="text/javascript">
+		const musicApp = {
+		  data() {
+		    return {
+		    	musicList: [ ],
+		       music: { }, //{ title: '', artist: '', regdate: '', url : '' },
+		       editing: false //데이터 편집 중인지 여부 (입력 폼 출력 여부 결정)
+		    }
+		  },
+		  created() { // `this` points to the vm instance
+			  console.log('created...'); 
+			  this.load();
+		  },
+		  methods: { //메소드 안에서 사용하는 `this` 는 Vue 인스턴스
+			load() {
+				axios.get('/musics')
+				.then((response) => { console.log(response); this.musicList = response.data._embedded.musics; })
+				.catch(error=> console.log(error));
+		  	},
+			add(event) {
+		      this.music = {};
+		      this.editing = true;
+		    },
+			view(item,event) {
+		      axios.get(item._links.self.href)
+	    	  .then(response=>{ console.log(response); this.music = response.data; this.editing = true; })
+	    	  .catch(error=>console.log(error));
+		    },
+			save(event) {
+		    	let reqCmd = this.music._links?'patch':'post';
+		    	let reqUrl = this.music._links?this.music._links.self.href:'/musics';
+		    	axios({ method: reqCmd, url: reqUrl, data: this.music })
+		    	  .then(response=>{ console.log(response); this.editing = false; this.load(); })
+		    	  .catch(error=>console.log(error));
+		    },
+			del(event) {
+		    	if (confirm('정말 삭제?')) {
+		    		axios.delete(item._links.self.href)
+			    	  .then(response=>{ console.log(response); this.editing = false; this.load(); })
+			    	  .catch(error=>console.log(error));
+		    	}
+		    }
+		  }
+		};
+	
+		Vue.createApp(musicApp).mount('#app');
+</script>
+</body>
+</html>
