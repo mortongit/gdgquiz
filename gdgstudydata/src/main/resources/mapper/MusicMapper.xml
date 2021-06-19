@@ -16,4 +16,9 @@
 		FROM music
 		WHERE url LIKE '%'||#{id}||'%'
 	</select>
+	<select id="findAll" resultType="Music" parameterType="org.springframework.data.jdbc.mybatis.MyBatisContext">
+		SELECT id, title, artist, regdate, url
+		FROM music
+		ORDER BY regdate 
+	</select>
 </mapper>

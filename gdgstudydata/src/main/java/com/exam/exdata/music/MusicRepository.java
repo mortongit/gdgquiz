@@ -4,12 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 
 //@Repository
 //@RepositoryRestResource(path = "music")
-public interface MusicRepository extends PagingAndSortingRepository<Music, Long> {
+//public interface MusicRepository extends PagingAndSortingRepository<Music, Long> {
+public interface MusicRepository extends CrudRepository<Music, Long> {
 	//http://localhost:8080/musics/search/findByTitleContaining?title=제목
 	List<Music> findByTitleContaining(String title);
 	
@@ -23,6 +25,5 @@ public interface MusicRepository extends PagingAndSortingRepository<Music, Long>
 	@Query(name = "searchMusicOn") //네임드 쿼리 이름 지정 작동하지 않음
 	List<Music> sampleNamedQuery(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate regdate);
 	
-	
-	List<Music> findAllByUrl(String url);
+//	List<Music> findAllByUrl(String url);
 }
