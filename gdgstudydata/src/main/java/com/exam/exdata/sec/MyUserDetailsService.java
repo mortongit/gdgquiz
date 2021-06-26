@@ -1,4 +1,4 @@
-package com.exam.exdata;
+package com.exam.exdata.sec;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
